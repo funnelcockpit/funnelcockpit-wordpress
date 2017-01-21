@@ -1,0 +1,15 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.menu-icon-funnelpage .wp-menu-image {
+    background-image: url('../images/logoSquare.png');
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.text-muted {
+    color: #999;
+}
