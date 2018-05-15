@@ -121,7 +121,7 @@ class FunnelCockpit_Public {
 			$funnelPageHead = get_transient( 'funnelpage_' . $funnelPageId . '_head' );
 			$funnelPageBody = get_transient( 'funnelpage_' . $funnelPageId . '_body' );
 			if ( false === $funnelPageHead || false === $funnelPageBody ) {
-				$response = wp_remote_get( 'http://api.funnelcockpit.com/funnel-page/' . $funnelPageId ); // TODO: https!
+				$response = wp_remote_get( 'https://api.funnelcockpit.com/funnel-page/' . $funnelPageId );
 				if (isset($response['body'])) {
 					$funnelPage = json_decode($response['body']);
 					$funnelPageHead = $funnelPage->head;
@@ -133,7 +133,7 @@ class FunnelCockpit_Public {
 			}
 
 			add_action('wp_head', function() use ($funnelPageHead) {
-				echo preg_replace("#</?(head)[^>]*>#i", "", $funnelPageHead);;
+				echo preg_replace("#</?(head)[^>]*>#i", "", $funnelPageHead);
 			});
 
 			$path = plugin_dir_path( __FILE__ ). 'funnelpage-template.php';

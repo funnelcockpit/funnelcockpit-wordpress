@@ -1,10 +1,10 @@
 === FunnelCockpit ===
 Contributors: funnelcockpit
 Donate link: https://funnelcockpit.com/
-Tags: funnelcockpit
+Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 0.1
+Tested up to: 4.9.5
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,5 +22,8 @@ Die All-In-One Lösung für den Aufbau von Funnels, Seiten und Conversion-Optimi
 
 == Changelog ==
 
-= 0.1 =
+= 1.1.0 =
+* Use HTTPS with API
+
+= 1.0.0 =
 * Initial release

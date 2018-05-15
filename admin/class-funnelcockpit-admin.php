@@ -162,7 +162,7 @@ class FunnelCockpit_Admin {
 
 				if (!empty($apiKeyPrivate))
 				{
-					$response = wp_remote_post( 'http://api.funnelcockpit.com/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) ); // TODO: https!
+					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if ($response['response']['code'] == 200 && isset($response['body']))
 					{
 						$funnels = json_decode($response['body']);
@@ -203,7 +203,7 @@ class FunnelCockpit_Admin {
 						echo '<div class="error notice"><p>API Error: ' . $response['errors'][0] . '</p></div>';
 					}
 
-					$response = wp_remote_post( 'http://api.funnelcockpit.com/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) ); // TODO: https!
+					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if ($response['response']['code'] == 200 && isset($response['body']))
 					{
 						$funnelPages = json_decode($response['body']);

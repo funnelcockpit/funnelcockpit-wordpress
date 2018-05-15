@@ -1,0 +1,19 @@
+language: php
+php:
+- 7.0
+script:
+- php -l *.php
+branches:
+  only:
+  - "/\\d\\.\\d\\.\\d/"
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: sh $TRAVIS_BUILD_DIR/deploy/deploy.sh
+  on:
+    tags: true
+env:
+  global:
+  - SVN_REPOSITORY=https://plugins.svn.wordpress.org/funnelcockpit
+  - secure: DCv2ynYfFaCk6PT0Oal6+egDdq9pbusUVoNgR1QTLneOMB8zlxbjp2ZMJe4rNPkUWKcmRLQvzcqwFu9chDjD88uvPPMZSMGdOedGoebzcMV3BqPB/cNxWl4ZpII2Y22+2GOXtV4lgyE4JGS6DZm/NT8u7tqFJguabcPg6PQjw+GTkfR3Fg2t5kAsGKNB9LTnKkLk7Mj+lQh4MvZE2haVIcy/MOcOE7MYl7Ua1E0u0+VdMdJRbwlxBL4jVEn+OO65p6QKx+/4dinzNrEUygNDvdlYnAO7c4GbKavRuU+HvVE8eSGB5VKCNO9I45GQkvw9mX+AgT7CXYOAI0+ZGxElvDF8mqyb5uXlhmG+d1tmj1PZ22FESHavMQsidw5m6trGLb6iHOWpoZvuq55voeCfCgNx69FDycUX0EXs38PYbXiMsSwy2TWC83q6c+YaIdpYXGJzjyQ4bhdC2a68oeNqZcEO8gpFjy10ZUwxTC5HMsEbavMkL7WuyTLpgnj7EkYIm6WBJ8LYBZ7Wrf7KmfDO3AFMnXPQ0Ghm6T5li8mYJcK4lCGkeW33EDZkhhOgb+v8PfSGPixhgy+Rkwp+sUSPF9eGhRcz2zRLszCNz7o86eAYDCYW4igNWpXIATOk+k5JLTOvayPpAyxFXTOAwbu6g/QcfitevULmi5mHPS00JnU=
+  - secure: vw2LzHGvNGXhTyRwTbntdlxB/bM8yWxGiRy/SD9g0x0ymX8JwDFlyF3Xg8NR5JI8odEJNT64n92AxAIhea4cW+JwAETtNnPshjgpCFQKUB6mVS2UsLQBkcd2OxIvWcFmDYz6RfZ3zMBrm5B/CwBwK+7kpvYrY4EQSRBo6bY//xS65QNvOuAdkxKbl0vlMa5KpbUy1Io2PomSSUxOJrznLhSzaaf4rV4DzDgRxnb1o1darED5cJ46C9e0U8UfZKPe3DofpsAjHrFoUiAndsbQNlSExc89cZktAmhePgN4hE37pVaFGP/jGabvjoA8k2qXUs8t9mKZFSm2RYUT59V1Y6/ea3AiPdVJMH1Jx8GwVsEcKTnYix3CJw023HkAI7XP4CgNFwGpIpSpe8nBOObXR06dx/w/a3I6hOd00RWAObVllFDFQ7FundlCIdfTuBxH07tlRvhs3jlVtOjE7Wx0oe8+wkY4e8nAfIXujoObBDOdeAiqTuuTBeA6S+6UacZb0LdeNw+iNRtTfkPbkjPKEKzB2Aq3DcJH7+4PAosBIIDGrWWjjSavq70FT6wRP8qn05mBDAt5Re3+wAATNXY2Ye7N7HD6YLkomotC6SyMjf2M+2p421yXQX6vbWh3tWZYrSln4E70FLPyG5L1YA9g1BjRWVjTq1UCkIGtxNoajKk=
