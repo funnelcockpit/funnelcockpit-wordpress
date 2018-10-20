@@ -105,7 +105,20 @@ class FunnelCockpit_Admin {
 		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_private');
 		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_public');
 		register_setting('funnelcockpit_options', 'funnelcockpit_funnel_id');
+
+		if (get_option('permalink_structure') !== '/%postname%/') {
+            add_action( 'admin_notices', array( $this, 'permalink_structure_notice' ) );
+        }
 	}
+
+	public function permalink_structure_notice() {
+	    ?>
+        <div class="notice error" >
+            <p><?php _e( 'Die WordPress Permalinks Einstellung sollte auf "Beitragsname" bzw "Post name" stehen, damit deine FunnelCockpit Seiten erreichbar sind.', 'funnelcockpit' ); ?></p>
+            <p><strong><a href="/wp-admin/options-permalink.php">Hier beheben</a></strong></p>
+        </div>
+        <?php
+    }
 
 	public function funnelpage_register() {
 		$labels = array(
@@ -140,6 +153,37 @@ class FunnelCockpit_Admin {
 
 		register_post_type( 'funnelpage' , $args );
 	}
+
+    function add_funnelpages_to_dropdown( $select )
+    {
+        if ( FALSE === strpos( $select, '<select name=\'page_on_front\'' ) && FALSE === strpos( $select, '<select name="page_on_front"' ) )
+        {
+            return $select;
+        }
+
+        $funnelpages = get_posts( array( 'post_type' => 'funnelpage' ) );
+
+        if ( ! $funnelpages )
+        {
+            return $select;
+        }
+
+        $funnelpage_options = walk_page_dropdown_tree($funnelpages, 0,
+            array(
+                'depth' => 0,
+                'child_of' => 0,
+                'selected' => get_option( 'page_on_front' ),
+                'echo' => 0,
+                'name' => 'page_on_front',
+                'id' => '',
+                'show_option_none' => '',
+                'show_option_no_change' => '',
+                'option_none_value' => ''
+            )
+        );
+
+        return str_replace( '</select>', $funnelpage_options . '</select>', $select );
+    }
 
 	public function funnelpage_id_meta() {
 		?>

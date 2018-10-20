@@ -73,7 +73,7 @@ class FunnelCockpit_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->funnelcockpit, plugin_dir_url( __FILE__ ) . 'css/funnelcockpit-public.css', array(), $this->version, 'all' );
+		// wp_enqueue_style( $this->funnelcockpit, plugin_dir_url( __FILE__ ) . 'css/funnelcockpit-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -96,7 +96,7 @@ class FunnelCockpit_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->funnelcockpit, plugin_dir_url( __FILE__ ) . 'js/funnelcockpit-public.js', array( 'jquery' ), $this->version, false );
+		// wp_enqueue_script( $this->funnelcockpit, plugin_dir_url( __FILE__ ) . 'js/funnelcockpit-public.js', array( 'jquery' ), $this->version, false );
 
 	}
 
@@ -148,13 +148,18 @@ class FunnelCockpit_Public {
 	/**
 	 * Remove the slug from published post permalinks. Only affect our custom post type, though.
 	 */
-	function gp_remove_cpt_slug( $post_link, $post, $leavename ) {
-
+	function remove_funnelpage_slug( $post_link, $post, $leavename ) {
 		if ( 'funnelpage' != $post->post_type || 'publish' != $post->post_status ) {
 			return $post_link;
 		}
 
-		$post_link = str_replace( '/' . $post->post_type . '/', '/', $post_link );
+        if ( $post->ID == get_option( 'page_on_front' ) ) {
+            // $post_link = str_replace( '/' . $post->post_type . '/' . $post->post_name . '/', '/', $post_link );
+        } else {
+
+        }
+        $post_link = str_replace( '/' . $post->post_type . '/', '/', $post_link );
+
 
 		return $post_link;
 	}
@@ -164,18 +169,31 @@ class FunnelCockpit_Public {
 	 * All of our public post types can have /post-name/ as the slug, so they better be unique across all posts
 	 * By default, core only accounts for posts and pages where the slug is /post-name/
 	 */
-	function gp_parse_request_trick( $query ) {
+	function funnelpage_parse_request_trick( $query ) {
+		if ( ! $query->is_main_query() || is_admin() ) {
+            return;
+        }
 
-		// Only noop the main query
-		if ( ! $query->is_main_query() )
-			return;
+        global $wp;
+        $front = false;
 
-		// Only noop our very specific rewrite rule match
-		if ( 2 != count( $query->query ) || ! isset( $query->query['page'] ) ) {
-			return;
+        if ( ( is_home() && empty( $wp->query_string ) ) ) {
+            $front = true;
+        }
+
+        if ( ( $query->get( 'page_id' ) == get_option( 'page_on_front' ) && get_option( 'page_on_front' ) ) || empty( $wp->query_string ) ) {
+            $front = true;
+        }
+
+        if ( $front ) {
+            $query->set( 'post_type', array( 'post', 'page', 'funnelpage' ) );
+            return;
+        }
+
+		if ( !$query->is_home() && ( 2 != count( $query->query ) || ! isset( $query->query['page'] ) ) ) {
+            return;
 		}
 
-		// 'name' will be set if post permalinks are just post_name, otherwise the page rule will match
 		if ( ! empty( $query->query['name'] ) ) {
 			$query->set( 'post_type', array( 'post', 'page', 'funnelpage' ) );
 		}
