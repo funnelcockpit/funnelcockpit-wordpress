@@ -12,18 +12,24 @@
 				funnelPageInput.attr('disabled', true);
 			}
 
-			funnelInput.change(function(e) {
-				funnelPageInput.attr('disabled', !$(this).val());
-				if ($(this).val()) {
-					var funnelId = $(this).find(':selected').data('funnelId');
+			var toggleFunnelPageInput = function () {
+				funnelPageInput.attr('disabled', !funnelInput.val());
+				if (funnelInput.val()) {
+					var funnelId = funnelPageInput.find(':selected').data('funnelId');
 					console.log(funnelId);
 					funnelPageInput.empty();
 					$.each(funnelPages, function() {
-						if (!$(this).data('funnelId') || $(this).data('funnelId') == funnelId) {
+						if (!$(this).data('funnelId') || $(this).data('funnelId') === funnelId) {
 							funnelPageInput.append($(this));
 						}
 					});
 				}
+			};
+
+			toggleFunnelPageInput();
+
+			funnelInput.change(function(e) {
+				toggleFunnelPageInput();
 			});
 
 			funnelPageInput.change(function(e) {

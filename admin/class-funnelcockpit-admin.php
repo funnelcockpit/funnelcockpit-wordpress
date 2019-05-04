@@ -302,7 +302,7 @@ class FunnelCockpit_Admin {
 							<p>Last fetch: <strong><?php echo date('d.m.Y H:i', $fetchTime); ?></strong></p>
 						<?php } ?>
 						<br />
-						<p><?php submit_button( __('Clear cache', 'funnelcockpit'), 'secondary', 'clear_cache', false ); ?></p>
+						<p><?php submit_button( __('Clear cache', 'funnelcockpit'), 'primary', 'clear_cache', false ); ?></p>
 					</td>
 				</tr>
 

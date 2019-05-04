@@ -120,15 +120,19 @@ class FunnelCockpit_Public {
 			$funnelPageId = get_post_meta($post->ID, 'funnelpage_id', true);
 			$funnelPageHead = get_transient( 'funnelpage_' . $funnelPageId . '_head' );
 			$funnelPageBody = get_transient( 'funnelpage_' . $funnelPageId . '_body' );
-			if ( false === $funnelPageHead || false === $funnelPageBody ) {
+            $funnelPageTime = get_transient( 'funnelpage_' . $funnelPageId . '_time' );
+			if ( false === $funnelPageHead || false === $funnelPageBody || ($funnelPageTime < (time() - (60 * 30))) ) {
 				$response = wp_remote_get( 'https://api.funnelcockpit.com/funnel-page/' . $funnelPageId );
 				if (isset($response['body'])) {
 					$funnelPage = json_decode($response['body']);
-					$funnelPageHead = $funnelPage->head;
-					$funnelPageBody = $funnelPage->body;
-					set_transient( 'funnelpage_' . $funnelPageId . '_head', $funnelPage->head, 60 * 30 );
-					set_transient( 'funnelpage_' . $funnelPageId . '_body', $funnelPage->body, 60 * 30 );
-					set_transient( 'funnelpage_' . $funnelPageId . '_time', time(), 60 * 30 );
+                    if (!empty($funnelPage)) {
+                        $funnelPageTime = time();
+                        $funnelPageHead = $funnelPage->head;
+                        $funnelPageBody = $funnelPage->body . "\n<!-- cache time: " . date('Y-m-d H:m:s', $funnelPageTime) . " -->";
+                        set_transient( 'funnelpage_' . $funnelPageId . '_head', $funnelPageHead, 60 * 60 * 24 * 3 );
+                        set_transient( 'funnelpage_' . $funnelPageId . '_body', $funnelPageBody, 60 * 60 * 24 * 3 );
+                        set_transient( 'funnelpage_' . $funnelPageId . '_time', $funnelPageTime, 60 * 30 );
+                    }
 				}
 			}
 
