@@ -15,9 +15,9 @@
 			var toggleFunnelPageInput = function () {
 				funnelPageInput.attr('disabled', !funnelInput.val());
 				if (funnelInput.val()) {
-					var funnelId = funnelPageInput.find(':selected').data('funnelId');
-					console.log(funnelId);
+					var funnelId = funnelInput.find(':selected').data('funnelId');
 					funnelPageInput.empty();
+
 					$.each(funnelPages, function() {
 						if (!$(this).data('funnelId') || $(this).data('funnelId') === funnelId) {
 							funnelPageInput.append($(this));
