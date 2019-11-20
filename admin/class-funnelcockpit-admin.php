@@ -200,7 +200,7 @@ class FunnelCockpit_Admin {
 				$custom = get_post_custom($post->ID);
 				$apiKeyPrivate = get_option('funnelcockpit_apikey_private');
 				$apiKeyPublic = get_option('funnelcockpit_apikey_public');
-				$funnelId = $custom["funnel_id"][0];;
+				$funnelId = $custom["funnel_id"][0];
 				$funnelPageId = $custom["funnelpage_id"][0];
 				$fetchTime = get_transient('funnelpage_' . $funnelPageId . '_time');
 
@@ -347,7 +347,9 @@ class FunnelCockpit_Admin {
 		// prevent infinite loop
 		remove_action('save_post', array( &$this, 'save_funnelpage_meta' ), 1 );
 
-		if (!empty($_POST['post_title']) && empty($_POST['post_name'])) {
+		$new_slug = $_POST['post_name'];
+
+		if (!empty($_POST['post_title']) && empty($new_slug)) {
 			$title = $_POST['post_title'];
 			$new_slug = sanitize_title( $title );
 			if ( $post->post_name != $new_slug )
@@ -361,7 +363,15 @@ class FunnelCockpit_Admin {
 			}
 		}
 
-		// if (!empty($_POST['funnelpage_title']))
+        $apiKeyPrivate = get_option('funnelcockpit_apikey_private');
+		if (!empty($apiKeyPrivate) && !empty($_POST['funnel_id']) && !empty($_POST['funnelpage_id'])) {
+            $res = wp_remote_post( 'https://api.funnelcockpit.com/funnel/' . $_POST['funnel_id'] . '/page/' . $_POST['funnelpage_id'], array(
+                'headers' => array( 'Content-Type' => 'application/json; charset=utf-8', 'Authorization' => $apiKeyPrivate ),
+                'body'        => json_encode(array( 'slug' => $new_slug )),
+                'method'      => 'POST',
+                'data_format' => 'body',
+            ) );
+        }
 	}
 
 	public function add_admin_menu() {

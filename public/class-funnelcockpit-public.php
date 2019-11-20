@@ -123,8 +123,9 @@ class FunnelCockpit_Public {
             $funnelPageTime = get_transient( 'funnelpage_' . $funnelPageId . '_time' );
 			if ( false === $funnelPageHead || false === $funnelPageBody || ($funnelPageTime < (time() - (60 * 30))) ) {
 				$response = wp_remote_get( 'https://api.funnelcockpit.com/funnel-page/' . $funnelPageId );
-				if (isset($response['body'])) {
-					$funnelPage = json_decode($response['body']);
+                if ($response['response']['code'] == 200 && isset($response['body']))
+                {
+                    $funnelPage = json_decode($response['body']);
                     if (!empty($funnelPage)) {
                         $funnelPageTime = time();
                         $funnelPageHead = $funnelPage->head;
@@ -133,7 +134,7 @@ class FunnelCockpit_Public {
                         set_transient( 'funnelpage_' . $funnelPageId . '_body', $funnelPageBody, 60 * 60 * 24 * 3 );
                         set_transient( 'funnelpage_' . $funnelPageId . '_time', $funnelPageTime, 60 * 30 );
                     }
-				}
+                }
 			}
 
 			add_action('wp_head', function() use ($funnelPageHead) {
