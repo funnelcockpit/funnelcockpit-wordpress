@@ -105,6 +105,7 @@ class FunnelCockpit_Admin {
 		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_private');
 		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_public');
 		register_setting('funnelcockpit_options', 'funnelcockpit_funnel_id');
+		register_setting('funnelcockpit_options', 'funnelcockpit_print_head');
 
 		if (get_option('permalink_structure') !== '/%postname%/') {
             add_action( 'admin_notices', array( $this, 'permalink_structure_notice' ) );
@@ -381,6 +382,7 @@ class FunnelCockpit_Admin {
 	public function funnelcockpit_options() {
 		$apiKeyPublic = get_option('funnelcockpit_apikey_public');
 		$apiKeyPrivate = get_option('funnelcockpit_apikey_private');
+		$printHead = get_option('funnelcockpit_print_head');
 
 		?>
 
@@ -397,6 +399,10 @@ class FunnelCockpit_Admin {
 					<tr valign="top">
 						<th scope="row"><?php _e('Private API Key', 'funnelcockpit'); ?></th>
 						<td><input type="text" name="funnelcockpit_apikey_private" value="<?php echo $apiKeyPrivate; ?>" class="regular-text" /></td>
+					</tr>
+					<tr valign="top">
+						<th scope="row">WordPress Header nicht entfernen<br /><small>(für erfahrene Nutzer)</small></th>
+						<td><input type="checkbox" name="funnelcockpit_print_head" <?php echo $printHead == 'on' ? 'checked' : ''; ?> /></td>
 					</tr>
 				</table>
 

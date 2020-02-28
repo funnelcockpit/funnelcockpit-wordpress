@@ -16,8 +16,10 @@ $head = get_transient( 'funnelpage_' . $funnelPageId . '_head');
 
 if ($head !== false) {
     echo $head;
-} else {
-    wp_head();
+}
+
+if (get_option('funnelcockpit_print_head') == 'on') {
+	wp_head();
 }
 
 ?>
