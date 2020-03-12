@@ -8,6 +8,31 @@ wp_reset_query();
 
 $body = get_transient( 'funnelpage_' . $funnelPageId . '_body');
 $head = get_transient( 'funnelpage_' . $funnelPageId . '_head');
+$splitTestsEnabled = get_transient( 'funnelpage_' . $funnelPageId . '_splitTestsEnabled');
+
+if ($splitTestsEnabled === true || true) {
+	$cookies = array();
+	foreach ($_COOKIE as $name => $value) {
+		if (strpos($name, 'funnelPage') !== false) {
+			$cookies[] = new WP_Http_Cookie( array( 'name' => $name, 'value' => $value ) );
+		}
+	}
+
+	$response = wp_remote_get('https://page.funnelcockpit.com/' . $funnelPageId, [
+		'timeout' => 10,
+		'cookies' => $cookies
+	]);
+	if ($response['response']['code'] == 200 && isset($response['body'])) {
+		foreach ($response['cookies'] as $cookie) {
+			if (strpos($cookie->name, 'funnelPage') !== false) {
+				setcookie($cookie->name, $cookie->value, time() + (60 * 60 * 24 * 30));
+			}
+		}
+
+		echo $response['body'];
+		die();
+	}
+}
 
 ?>
 <!DOCTYPE html>

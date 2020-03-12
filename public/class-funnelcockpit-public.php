@@ -132,7 +132,7 @@ class FunnelCockpit_Public {
                         $funnelPageBody = $funnelPage->body . "\n<!-- cache time: " . date('Y-m-d H:m:s', $funnelPageTime) . " -->";
                         set_transient( 'funnelpage_' . $funnelPageId . '_head', $funnelPageHead, 60 * 60 * 24 * 3 );
                         set_transient( 'funnelpage_' . $funnelPageId . '_body', $funnelPageBody, 60 * 60 * 24 * 3 );
-                        set_transient( 'funnelpage_' . $funnelPageId . '_time', $funnelPageTime, 60 * 30 );
+                        set_transient( 'funnelpage_' . $funnelPageId . '_splitTestsEnabled', $funnelPage->splitTestsEnabled, 60 * 30 );
                     }
                 }
 			}
