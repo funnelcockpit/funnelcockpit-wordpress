@@ -10,7 +10,7 @@ $body = get_transient( 'funnelpage_' . $funnelPageId . '_body');
 $head = get_transient( 'funnelpage_' . $funnelPageId . '_head');
 $splitTestsEnabled = get_transient( 'funnelpage_' . $funnelPageId . '_splitTestsEnabled');
 
-if ($splitTestsEnabled === true || true) {
+if ($splitTestsEnabled === true) {
 	$cookies = array();
 	foreach ($_COOKIE as $name => $value) {
 		if (strpos($name, 'funnelPage') !== false) {
