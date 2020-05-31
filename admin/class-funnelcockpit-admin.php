@@ -208,7 +208,14 @@ class FunnelCockpit_Admin {
 				if (!empty($apiKeyPrivate))
 				{
 					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
-					if ($response['response']['code'] == 200 && isset($response['body']))
+					if (is_wp_error($response)) {
+						?>
+						<div class="error notice">
+							<p><?php echo $response->get_error_message(); ?></p>
+						</div>
+						<?php
+					}
+					else if ($response['response']['code'] == 200 && isset($response['body']))
 					{
 						$funnels = json_decode($response['body']);
 						if ($funnels && count($funnels) > 0)
@@ -243,13 +250,16 @@ class FunnelCockpit_Admin {
 					else if (!empty($response['response'])) {
 						echo '<div class="error notice"><p>API Error: ' . $response['response']['message'] . '</p></div>';
 					}
-					else if (!empty($response['errors']))
-					{
-						echo '<div class="error notice"><p>API Error: ' . $response['errors'][0] . '</p></div>';
-					}
 
 					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
-					if ($response['response']['code'] == 200 && isset($response['body']))
+					if (is_wp_error($response)) {
+						?>
+						<div class="error notice">
+							<p><?php echo $response->get_error_message(); ?></p>
+						</div>
+						<?php
+					}
+					else if ($response['response']['code'] == 200 && isset($response['body']))
 					{
 						$funnelPages = json_decode($response['body']);
 						if ($funnelPages && count($funnelPages) > 0)
@@ -279,10 +289,6 @@ class FunnelCockpit_Admin {
 					}
 					else if (!empty($response['response'])) {
 						echo '<div class="error notice"><p>API Error: ' . $response['response']['message'] . '</p></div>';
-					}
-					else if (!empty($response['errors']))
-					{
-						echo '<div class="error notice"><p>API Error: ' . $response['errors'][0] . '</p></div>';
 					}
 				}
 
