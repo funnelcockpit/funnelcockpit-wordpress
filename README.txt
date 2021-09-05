@@ -3,7 +3,7 @@ Contributors: funnelcockpit
 Donate link: https://funnelcockpit.com/
 Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
-Tested up to: 5.4
+Tested up to: 5.8
 Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
