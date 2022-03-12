@@ -157,7 +157,7 @@ class FunnelCockpit {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
 		$this->loader->add_action( 'init', $plugin_admin, 'funnelpage_register' );
 
-        $this->loader->add_filter( 'wp_dropdown_pages', $plugin_admin, 'add_funnelpages_to_dropdown', 10, 1 );
+    $this->loader->add_filter( 'wp_dropdown_pages', $plugin_admin, 'add_funnelpages_to_dropdown', 10, 1 );
 
 		$this->loader->add_action( 'save_post', $plugin_admin, 'save_funnelpage_meta', 1, 2);
 
@@ -175,14 +175,11 @@ class FunnelCockpit {
 
 		$plugin_public = new FunnelCockpit_Public( $this->get_funnelcockpit(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 		$this->loader->add_action( 'single_template', $plugin_public, 'funnelpage_template' );
-        $this->loader->add_action( 'frontpage_template', $plugin_public, 'funnelpage_template' );
+    $this->loader->add_action( 'frontpage_template', $plugin_public, 'funnelpage_template' );
 
 		$this->loader->add_filter( 'post_type_link', $plugin_public, 'remove_funnelpage_slug', 10, 3 );
-		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'funnelpage_parse_request_trick' );
+		$this->loader->add_action( 'pre_get_posts', $plugin_public, 'funnelpage_parse_request_trick', 20 );
 	}
 
 	/**
