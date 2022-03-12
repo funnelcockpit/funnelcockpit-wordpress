@@ -16,7 +16,7 @@
  * Plugin Name:       FunnelCockpit
  * Plugin URI:        https://funnelcockpit.com
  * Description:       Die All-In-One Lösung für den Aufbau von Funnels, Seiten und Conversion-Optimierung via Splittests, Maustracking und mehr.
- * Version:           1.3.4
+ * Version:           1.3.5
  * Author:            FunnelCockpit
  * Author URI:        https://funnelcockpit.com
  * License:           GPL-2.0+
