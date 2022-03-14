@@ -73,7 +73,7 @@ class FunnelCockpit_Public {
 			$funnelPageId = get_post_meta($post->ID, 'funnelpage_id', true);
 			$funnelPageHead = get_transient( 'funnelpage_' . $funnelPageId . '_head' );
 			$funnelPageBody = get_transient( 'funnelpage_' . $funnelPageId . '_body' );
-            $funnelPageTime = get_transient( 'funnelpage_' . $funnelPageId . '_time' );
+      $funnelPageTime = get_transient( 'funnelpage_' . $funnelPageId . '_time' );
 			if ( false === $funnelPageHead || false === $funnelPageBody || ($funnelPageTime < (time() - (60 * 30))) ) {
 				$response = wp_remote_get( 'https://api.funnelcockpit.com/funnel-page/' . $funnelPageId );
                 if ($response['response']['code'] == 200 && isset($response['body']))

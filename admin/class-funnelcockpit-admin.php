@@ -273,7 +273,11 @@ class FunnelCockpit_Admin {
 									<?php
 										echo '<option value="" disabled' . (empty($funnelPageId) ? ' selected' : '') . '>' . __('Please select...', 'funnelcockpit') . '</option>';
 										foreach ( $funnelPages as $funnelPage ) {
-											echo '<option value="' . $funnelPage->_id . '"' . ($funnelPageId == $funnelPage->_id ? ' selected' : '') . ' data-funnel-id="' . $funnelPage->funnelId . '" data-title="' . $funnelPage->title . '">' . $funnelPage->title . '</option>';
+                      if (!empty($funnelPage->membersAreaId)) {
+                        continue;
+                      }
+                      $name = !empty($funnelPage->name) ? $funnelPage->name : $funnelPage->title;
+											echo '<option value="' . $funnelPage->_id . '"' . ($funnelPageId == $funnelPage->_id ? ' selected' : '') . ' data-funnel-id="' . $funnelPage->funnelId . '" data-title="' . $name . '">' . $name . '</option>';
 										}
 									?>
 									</select>
