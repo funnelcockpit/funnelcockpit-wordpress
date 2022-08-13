@@ -26,21 +26,28 @@
 				}
 			};
 
-			toggleFunnelPageInput();
-
-			funnelInput.change(function(e) {
-				toggleFunnelPageInput();
-			});
-
-			funnelPageInput.change(function(e) {
-				var postTitle = $('input[name="post_title"]');
-				var title = $(this).find(':selected').data('title');
+      var updatePostTitle = function() {
+        var postTitle = $('input[name="post_title"]');
+				var title = funnelPageInput.find(':selected').data('title');
 				if (!postTitle.length) {
 					$('#post').append('<input type="hidden" name="post_title" value="' + title + '">');
 				} else {
 					postTitle.val(title);
 				}
+      };
+
+			toggleFunnelPageInput();
+
+			funnelInput.change(function(e) {
+				toggleFunnelPageInput();
+        updatePostTitle();
 			});
+
+			funnelPageInput.change(function(e) {
+				updatePostTitle();
+			});
+
+      updatePostTitle();
 		}
 
 	});

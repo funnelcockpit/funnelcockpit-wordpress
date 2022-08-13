@@ -3,8 +3,8 @@ Contributors: funnelcockpit
 Donate link: https://funnelcockpit.com/
 Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
-Tested up to: 5.9.2
-Stable tag: 1.3.5
+Tested up to: 5.9.3
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,9 @@ Die All-In-One Lösung für den Aufbau von Funnels, Seiten und Conversion-Optimi
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.4.0 =
+* Fixed post titles when saving pages
 
 = 1.3.5 =
 * Resolve Elementor compatibility

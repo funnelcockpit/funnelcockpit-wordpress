@@ -201,8 +201,8 @@ class FunnelCockpit_Admin {
 				$custom = get_post_custom($post->ID);
 				$apiKeyPrivate = get_option('funnelcockpit_apikey_private');
 				$apiKeyPublic = get_option('funnelcockpit_apikey_public');
-				$funnelId = $custom["funnel_id"][0];
-				$funnelPageId = $custom["funnelpage_id"][0];
+				$funnelId = !empty($custom["funnel_id"]) ? $custom["funnel_id"][0] : '';
+				$funnelPageId = !empty($custom["funnelpage_id"]) ? $custom["funnelpage_id"][0] : '';
 				$fetchTime = get_transient('funnelpage_' . $funnelPageId . '_time');
 
 				if (!empty($apiKeyPrivate))
@@ -338,8 +338,8 @@ class FunnelCockpit_Admin {
 		// We'll put it into an array to make it easier to loop though.
 
 		$meta = array(
-			'funnel_id' => $_POST['funnel_id'],
-			'funnelpage_id' => $_POST['funnelpage_id'],
+			'funnel_id' => !empty($_POST['funnel_id']) ? $_POST['funnel_id'] : '',
+			'funnelpage_id' => !empty($_POST['funnelpage_id']) ? $_POST['funnelpage_id'] : '',
 		);
 
 		// Add values of $events_meta as custom fields
@@ -358,7 +358,7 @@ class FunnelCockpit_Admin {
 		// prevent infinite loop
 		remove_action('save_post', array( &$this, 'save_funnelpage_meta' ), 1 );
 
-		$new_slug = $_POST['post_name'];
+		$new_slug = !empty($_POST['post_name']) ? $_POST['post_name'] : '';
 
 		if (!empty($_POST['post_title']) && empty($new_slug)) {
 			$title = $_POST['post_title'];
@@ -368,7 +368,8 @@ class FunnelCockpit_Admin {
 				wp_update_post(
 					array (
 						'ID'        => $post->ID,
-						'post_name' => $new_slug
+						'post_name' => $new_slug,
+            'post_title' => $_POST['post_title']
 					)
 				);
 			}
