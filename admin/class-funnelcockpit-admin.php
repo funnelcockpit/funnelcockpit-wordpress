@@ -276,6 +276,9 @@ class FunnelCockpit_Admin {
                       if (!empty($funnelPage->membersAreaId)) {
                         continue;
                       }
+                      if (!empty($funnelPage->splitTestVariant)) {
+                        continue;
+                      }
                       $name = !empty($funnelPage->name) ? $funnelPage->name : $funnelPage->title;
 											echo '<option value="' . $funnelPage->_id . '"' . ($funnelPageId == $funnelPage->_id ? ' selected' : '') . ' data-funnel-id="' . $funnelPage->funnelId . '" data-title="' . $name . '">' . $name . '</option>';
 										}
