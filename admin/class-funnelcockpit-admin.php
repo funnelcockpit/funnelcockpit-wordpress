@@ -421,6 +421,19 @@ class FunnelCockpit_Admin {
 				</table>
 
 				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Settings', 'funnelcockpit') ?>" /></p>
+
+				<?php if (isset($_GET['settings-updated'])) { ?>
+					<div class="notice notice-success is-dismissible" style="animation: fadeOut 5s forwards;">
+						<p><?php _e('Settings saved.', 'funnelcockpit'); ?></p>
+					</div>
+				<?php } else if (isset($_GET['error'])) {
+					error_log('Error saving funnelcockpit settings: ' . $_GET['error']);
+					?>
+					<div class="notice notice-error is-dismissible" style="animation: fadeOut 5s forwards;">
+						<p><?php _e('Error saving settings:', 'funnelcockpit'); ?> <?php echo $_GET['error']; ?></p>
+					</div>
+				<?php } ?>
+
 			</form>
 		</div>
 
