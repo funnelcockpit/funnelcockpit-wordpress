@@ -24,13 +24,13 @@ svn add --force assets
 
 # 5. Create SVN tag
 svn cp \
-trunk tags/$$GITHUB_REF_NAME \
+trunk tags/$GITHUB_REF_NAME \
 --username $SVN_USERNAME \
 --password $SVN_PASSWORD
 
 # 6. Push SVN tag
 svn ci \
---message "Release $$GITHUB_REF_NAME" \
+--message "Release $GITHUB_REF_NAME" \
 --username $SVN_USERNAME \
 --password $SVN_PASSWORD \
 --non-interactive
