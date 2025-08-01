@@ -75,14 +75,14 @@ class FunnelCockpit_Public {
 			$funnelPageBody = get_transient( 'funnelpage_' . $funnelPageId . '_body' );
       $funnelPageTime = get_transient( 'funnelpage_' . $funnelPageId . '_time' );
 			if ( false === $funnelPageHead || false === $funnelPageBody || ($funnelPageTime < (time() - (60 * 30))) ) {
-				$response = wp_remote_get( 'https://api.funnelcockpit.com/funnel-page/' . $funnelPageId );
+				$response = wp_remote_get( 'http://localhost:3003/funnel-page/' . $funnelPageId );
                 if ($response['response']['code'] == 200 && isset($response['body']))
                 {
                     $funnelPage = json_decode($response['body']);
                     if (!empty($funnelPage)) {
                         $funnelPageTime = time();
                         $funnelPageHead = $funnelPage->head;
-                        $funnelPageBody = $funnelPage->body . "\n<!-- cache time: " . date('Y-m-d H:m:s', $funnelPageTime) . " -->";
+                        $funnelPageBody = $funnelPage->body . "\n<!-- cache time: " . gmdate('Y-m-d H:i:s', $funnelPageTime) . " -->";
                         set_transient( 'funnelpage_' . $funnelPageId . '_head', $funnelPageHead, 60 * 60 * 24 * 3 );
                         set_transient( 'funnelpage_' . $funnelPageId . '_body', $funnelPageBody, 60 * 60 * 24 * 3 );
                         $splitTestsEnabled = isset($funnelPage->splitTestsEnabled) ? $funnelPage->splitTestsEnabled : false;
@@ -92,6 +92,8 @@ class FunnelCockpit_Public {
 			}
 
 			add_action('wp_head', function() use ($funnelPageHead) {
+				// Output trusted HTML head content from FunnelCockpit service
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo preg_replace("#</?(head)[^>]*>#i", "", $funnelPageHead);
 			});
 

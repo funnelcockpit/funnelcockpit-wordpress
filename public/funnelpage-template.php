@@ -3,7 +3,7 @@
 global $wp_query;
 $postid = $wp_query->post->ID;
 $funnelPageId = get_post_meta($postid, 'funnelpage_id', true);
-wp_reset_query();
+wp_reset_postdata();
 
 
 $body = get_transient( 'funnelpage_' . $funnelPageId . '_body');
@@ -29,6 +29,8 @@ if ($splitTestsEnabled) {
 			}
 		}
 
+		// Output trusted HTML content from FunnelCockpit service
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $response['body'];
 		die();
 	}
@@ -40,6 +42,8 @@ if ($splitTestsEnabled) {
 <?php
 
 if ($head !== false) {
+    // Output trusted HTML head content from FunnelCockpit service
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo $head;
 }
 
@@ -51,6 +55,8 @@ if (get_option('funnelcockpit_print_head') == 'on') {
 
 <?php
 if ($body !== false) {
+    // Output trusted HTML body content from FunnelCockpit service
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     echo str_replace('</body>', '', $body);
 } else {
     echo '<body>';

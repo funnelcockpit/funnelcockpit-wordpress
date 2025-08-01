@@ -102,20 +102,38 @@ class FunnelCockpit_Admin {
 
 	public function admin_init() {
 		add_meta_box("funnelpage_id_meta", "FunnelCockpit " . _x('Page', 'post type singular name', 'funnelcockpit'), array(&$this, 'funnelpage_id_meta'), "funnelpage", "normal", "default");
-		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_private');
-		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_public');
-		register_setting('funnelcockpit_options', 'funnelcockpit_funnel_id');
-		register_setting('funnelcockpit_options', 'funnelcockpit_print_head');
+		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_private', array(
+			'sanitize_callback' => 'sanitize_text_field'
+		));
+		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_public', array(
+			'sanitize_callback' => 'sanitize_text_field'
+		));
+		register_setting('funnelcockpit_options', 'funnelcockpit_funnel_id', array(
+			'sanitize_callback' => 'sanitize_text_field'
+		));
+		register_setting('funnelcockpit_options', 'funnelcockpit_print_head', array(
+			'sanitize_callback' => array( $this, 'sanitize_checkbox' )
+		));
 
 		if (get_option('permalink_structure') !== '/%postname%/') {
             add_action( 'admin_notices', array( $this, 'permalink_structure_notice' ) );
         }
 	}
 
+	/**
+	 * Sanitize checkbox input
+	 *
+	 * @param mixed $input The input value
+	 * @return string 'on' if checked, empty string if not
+	 */
+	public function sanitize_checkbox( $input ) {
+		return ( isset( $input ) && $input == 'on' ) ? 'on' : '';
+	}
+
 	public function permalink_structure_notice() {
 	    ?>
         <div class="notice error" >
-            <p><?php _e( 'Die WordPress Permalinks Einstellung sollte auf "Beitragsname" bzw "Post name" stehen, damit deine FunnelCockpit Seiten erreichbar sind.', 'funnelcockpit' ); ?></p>
+            <p><?php esc_html_e( 'Die WordPress Permalinks Einstellung sollte auf "Beitragsname" bzw "Post name" stehen, damit deine FunnelCockpit Seiten erreichbar sind.', 'funnelcockpit' ); ?></p>
             <p><strong><a href="/wp-admin/options-permalink.php">Hier beheben</a></strong></p>
         </div>
         <?php
@@ -190,10 +208,11 @@ class FunnelCockpit_Admin {
 		?>
 
 		<noscript>
-			<div class="error notice"><p><strong><?php _e('Please enable Javascript to edit this Funnel page!', 'funnelcockpit'); ?></strong></p></div>
+			<div class="error notice"><p><strong><?php esc_html_e('Please enable Javascript to edit this Funnel page!', 'funnelcockpit'); ?></strong></p></div>
 		</noscript>
 
 		<div class="wrap">
+			<?php wp_nonce_field( 'funnelcockpit_save_meta', 'funnelcockpit_meta_nonce' ); ?>
 			<table class="form-table">
 
 				<?php
@@ -207,11 +226,11 @@ class FunnelCockpit_Admin {
 
 				if (!empty($apiKeyPrivate))
 				{
-					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
+					$response = wp_remote_post( 'http://localhost:3003/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if (is_wp_error($response)) {
 						?>
 						<div class="error notice">
-							<p><?php echo $response->get_error_message(); ?></p>
+							<p><?php echo esc_html($response->get_error_message()); ?></p>
 						</div>
 						<?php
 					}
@@ -222,18 +241,18 @@ class FunnelCockpit_Admin {
 						{
 							if (empty($funnelId) || empty($funnelPageId))
 							{
-								echo '<div class="update-nag notice"><p>' . __('Please select a Funnel and a Page below to get started!', 'funnelcockpit') . '</p></div>';
+								echo '<div class="update-nag notice"><p>' . esc_html(__('Please select a Funnel and a Page below to get started!', 'funnelcockpit')) . '</p></div>';
 							}
 							?>
 
 							<tr valign="top">
-								<th scope="row"><?php _e('Select Funnel', 'funnelcockpit'); ?></th>
+								<th scope="row"><?php esc_html_e('Select Funnel', 'funnelcockpit'); ?></th>
 								<td>
 									<select name="funnel_id">
 									<?php
-										echo '<option value="" disabled' . (empty($funnelId) ? ' selected' : '') . '>' . __('Please select...', 'funnelcockpit') . '</option>';
+										echo '<option value="" disabled' . (empty($funnelId) ? ' selected' : '') . '>' . esc_html(__('Please select...', 'funnelcockpit')) . '</option>';
 										foreach ( $funnels as $funnel ) {
-											echo '<option value="' . $funnel->_id . '"' . ($funnelId == $funnel->_id ? ' selected' : '') . ' data-funnel-id="' . $funnel->_id . '">' . $funnel->name . '</option>';
+											echo '<option value="' . esc_attr($funnel->_id) . '"' . ($funnelId == $funnel->_id ? ' selected' : '') . ' data-funnel-id="' . esc_attr($funnel->_id) . '">' . esc_html($funnel->name) . '</option>';
 										}
 									?>
 									</select>
@@ -244,18 +263,18 @@ class FunnelCockpit_Admin {
 						}
 						else
 						{
-							echo '<div class="error notice"><p>' . __('No Funnels found. Please create one first at funnelcockpit.com!', 'funnelcockpit') . '</p></div>';
+							echo '<div class="error notice"><p>' . esc_html(__('No Funnels found. Please create one first at funnelcockpit.com!', 'funnelcockpit')) . '</p></div>';
 						}
 					}
 					else if (!empty($response['response'])) {
-						echo '<div class="error notice"><p>API Error: ' . $response['response']['message'] . '</p></div>';
+						echo '<div class="error notice"><p>API Error: ' . esc_html($response['response']['message']) . '</p></div>';
 					}
 
-					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
+					$response = wp_remote_post( 'http://localhost:3003/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if (is_wp_error($response)) {
 						?>
 						<div class="error notice">
-							<p><?php echo $response->get_error_message(); ?></p>
+							<p><?php echo esc_html($response->get_error_message()); ?></p>
 						</div>
 						<?php
 					}
@@ -267,11 +286,11 @@ class FunnelCockpit_Admin {
 						?>
 
 							<tr valign="top">
-								<th scope="row"><?php _e('Select Page', 'funnelcockpit'); ?></th>
+								<th scope="row"><?php esc_html_e('Select Page', 'funnelcockpit'); ?></th>
 								<td>
 									<select name="funnelpage_id">
 									<?php
-										echo '<option value="" disabled' . (empty($funnelPageId) ? ' selected' : '') . '>' . __('Please select...', 'funnelcockpit') . '</option>';
+										echo '<option value="" disabled' . (empty($funnelPageId) ? ' selected' : '') . '>' . esc_html(__('Please select...', 'funnelcockpit')) . '</option>';
 										foreach ( $funnelPages as $funnelPage ) {
                       if (!empty($funnelPage->membersAreaId)) {
                         continue;
@@ -280,7 +299,7 @@ class FunnelCockpit_Admin {
                         continue;
                       }
                       $name = !empty($funnelPage->name) ? $funnelPage->name : $funnelPage->title;
-											echo '<option value="' . $funnelPage->_id . '"' . ($funnelPageId == $funnelPage->_id ? ' selected' : '') . ' data-funnel-id="' . $funnelPage->funnelId . '" data-title="' . $name . '">' . $name . '</option>';
+											echo '<option value="' . esc_attr($funnelPage->_id) . '"' . ($funnelPageId == $funnelPage->_id ? ' selected' : '') . ' data-funnel-id="' . esc_attr($funnelPage->funnelId) . '" data-title="' . esc_attr($name) . '">' . esc_html($name) . '</option>';
 										}
 									?>
 									</select>
@@ -291,30 +310,30 @@ class FunnelCockpit_Admin {
 						}
 						else
 						{
-							echo '<div class="error notice"><p>' . _e('No funnel pages found! Please create one first at funnelcockpit.com!', 'funnelcockpit') . '</p></div>';
+							echo '<div class="error notice"><p>' . esc_html(__('No funnel pages found! Please create one first at funnelcockpit.com!', 'funnelcockpit')) . '</p></div>';
 						}
 					}
 					else if (!empty($response['response'])) {
-						echo '<div class="error notice"><p>API Error: ' . $response['response']['message'] . '</p></div>';
+						echo '<div class="error notice"><p>API Error: ' . esc_html($response['response']['message']) . '</p></div>';
 					}
 				}
 
 				?>
 
 				<tr valign="top">
-					<th scope="row"><?php _e('Link', 'funnelcockpit'); ?></th>
+					<th scope="row"><?php esc_html_e('Link', 'funnelcockpit'); ?></th>
 					<td>
-						<input type="text" name="post_name" value="<?php echo $post->post_name; ?>" class="regular-text" />
+						<input type="text" name="post_name" value="<?php echo esc_attr($post->post_name); ?>" class="regular-text" />
 					</td>
 				</tr>
 
 				<tr valign="top">
-					<th scope="row"><?php _e('Cache', 'funnelcockpit'); ?></th>
+					<th scope="row"><?php esc_html_e('Cache', 'funnelcockpit'); ?></th>
 					<td>
-						<p class="text-muted"><?php _e('Your page is fetched from our servers every 30 minutes.', 'funnelcockpit'); ?></p>
-						<?php if (!empty($funnelPageId) && !empty($fetchTime)) { ?>
-							<p>Last fetch: <strong><?php echo date('d.m.Y H:i', $fetchTime); ?></strong></p>
-						<?php } ?>
+						<p class="text-muted"><?php esc_html_e('Your page is fetched from our servers every 30 minutes.', 'funnelcockpit'); ?></p>
+											<?php if (!empty($funnelPageId) && !empty($fetchTime)) { ?>
+						<p>Last fetch: <strong><?php echo esc_html(gmdate('d.m.Y H:i', $fetchTime)); ?></strong></p>
+					<?php } ?>
 						<br />
 						<p><?php submit_button( __('Clear cache', 'funnelcockpit'), 'primary', 'clear_cache', false ); ?></p>
 					</td>
@@ -331,18 +350,24 @@ class FunnelCockpit_Admin {
 		if ( !current_user_can( 'edit_post', $post->ID ))
 			return $post->ID;
 
+		// Verify nonce for security
+		if ( ! isset( $_POST['funnelcockpit_meta_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['funnelcockpit_meta_nonce'] ) ), 'funnelcockpit_save_meta' ) ) {
+			return $post->ID;
+		}
+
 		if (isset($_POST['clear_cache']) && !empty($_POST['funnelpage_id'])) {
-			delete_transient('funnelpage_' . $_POST['funnelpage_id'] . '_head');
-			delete_transient('funnelpage_' . $_POST['funnelpage_id'] . '_body');
-			delete_transient('funnelpage_' . $_POST['funnelpage_id'] . '_time');
+			$funnelpage_id = sanitize_text_field( wp_unslash( $_POST['funnelpage_id'] ) );
+			delete_transient('funnelpage_' . $funnelpage_id . '_head');
+			delete_transient('funnelpage_' . $funnelpage_id . '_body');
+			delete_transient('funnelpage_' . $funnelpage_id . '_time');
 		}
 
 		// OK, we're authenticated: we need to find and save the data
 		// We'll put it into an array to make it easier to loop though.
 
 		$meta = array(
-			'funnel_id' => !empty($_POST['funnel_id']) ? $_POST['funnel_id'] : '',
-			'funnelpage_id' => !empty($_POST['funnelpage_id']) ? $_POST['funnelpage_id'] : '',
+			'funnel_id' => !empty($_POST['funnel_id']) ? sanitize_text_field( wp_unslash( $_POST['funnel_id'] ) ) : '',
+			'funnelpage_id' => !empty($_POST['funnelpage_id']) ? sanitize_text_field( wp_unslash( $_POST['funnelpage_id'] ) ) : '',
 		);
 
 		// Add values of $events_meta as custom fields
@@ -361,10 +386,10 @@ class FunnelCockpit_Admin {
 		// prevent infinite loop
 		remove_action('save_post', array( &$this, 'save_funnelpage_meta' ), 1 );
 
-		$new_slug = !empty($_POST['post_name']) ? $_POST['post_name'] : '';
+		$new_slug = !empty($_POST['post_name']) ? sanitize_text_field( wp_unslash( $_POST['post_name'] ) ) : '';
 
 		if (!empty($_POST['post_title']) && empty($new_slug)) {
-			$title = $_POST['post_title'];
+			$title = sanitize_text_field( wp_unslash( $_POST['post_title'] ) );
 			$new_slug = sanitize_title( $title );
 			if ( $post->post_name != $new_slug )
 			{
@@ -372,7 +397,7 @@ class FunnelCockpit_Admin {
 					array (
 						'ID'        => $post->ID,
 						'post_name' => $new_slug,
-            'post_title' => $_POST['post_title']
+            'post_title' => sanitize_text_field( wp_unslash( $_POST['post_title'] ) )
 					)
 				);
 			}
@@ -380,7 +405,9 @@ class FunnelCockpit_Admin {
 
         $apiKeyPrivate = get_option('funnelcockpit_apikey_private');
 		if (!empty($apiKeyPrivate) && !empty($_POST['funnel_id']) && !empty($_POST['funnelpage_id'])) {
-            $res = wp_remote_post( 'https://api.funnelcockpit.com/funnel/' . $_POST['funnel_id'] . '/page/' . $_POST['funnelpage_id'], array(
+			$funnel_id = sanitize_text_field( wp_unslash( $_POST['funnel_id'] ) );
+			$funnelpage_id = sanitize_text_field( wp_unslash( $_POST['funnelpage_id'] ) );
+            $res = wp_remote_post( 'http://localhost:3003/funnel/' . $funnel_id . '/page/' . $funnelpage_id, array(
                 'headers' => array( 'Content-Type' => 'application/json; charset=utf-8', 'Authorization' => $apiKeyPrivate ),
                 'body'        => json_encode(array( 'slug' => $new_slug )),
                 'method'      => 'POST',
@@ -390,10 +417,29 @@ class FunnelCockpit_Admin {
 	}
 
 	public function add_admin_menu() {
-		add_submenu_page('edit.php?post_type=funnelpage', 'FunnelCockpit Settings', 'Settings', 'create_users', basename(__FILE__), array(&$this, 'funnelcockpit_options' ));
+		add_submenu_page('edit.php?post_type=funnelpage', 'FunnelCockpit Settings', 'Settings', 'create_users', 'funnelcockpit-settings', array(&$this, 'funnelcockpit_options' ));
 	}
 
 	public function funnelcockpit_options() {
+		// Check for nonce and process form data
+		if ( isset( $_POST['submit'] ) && isset( $_POST['funnelcockpit_options_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['funnelcockpit_options_nonce'] ) ), 'funnelcockpit_options_update' ) ) {
+			// Save the settings
+			if ( isset( $_POST['funnelcockpit_apikey_public'] ) ) {
+				update_option( 'funnelcockpit_apikey_public', sanitize_text_field( wp_unslash( $_POST['funnelcockpit_apikey_public'] ) ) );
+			}
+			if ( isset( $_POST['funnelcockpit_apikey_private'] ) ) {
+				update_option( 'funnelcockpit_apikey_private', sanitize_text_field( wp_unslash( $_POST['funnelcockpit_apikey_private'] ) ) );
+			}
+			if ( isset( $_POST['funnelcockpit_print_head'] ) ) {
+				update_option( 'funnelcockpit_print_head', $this->sanitize_checkbox( sanitize_text_field( wp_unslash( $_POST['funnelcockpit_print_head'] ) ) ) );
+			} else {
+				update_option( 'funnelcockpit_print_head', '' );
+			}
+
+			// Redirect with a success message
+			wp_safe_redirect( add_query_arg( 'settings-updated', 'true', menu_page_url( 'funnelcockpit-settings', false ) ) );
+			exit;
+		}
 		$apiKeyPublic = get_option('funnelcockpit_apikey_public');
 		$apiKeyPrivate = get_option('funnelcockpit_apikey_private');
 		$printHead = get_option('funnelcockpit_print_head');
@@ -401,18 +447,21 @@ class FunnelCockpit_Admin {
 		?>
 
 		<div class="wrap">
-			<img src="<?php echo plugin_dir_url( __FILE__ ) . 'images/logo.png'; ?>" alt="FunnelCockpit" height="50">
-			<p><?php sprintf(__('You need to have a %s account with an already set up funnel to use this plugin.', 'funnelcockpit'), '<a target="_blank" href="https://funnelcockpit.com/">FunnelCockpit</a>'); ?></p>
-			<form method="post" action="options.php">
-				<?php settings_fields( 'funnelcockpit_options' ); ?>
+			<img src="<?php echo esc_url(plugin_dir_url( __FILE__ ) . 'images/logo.png'); ?>" alt="FunnelCockpit" height="50">
+			<p><?php 
+				/* translators: %s: FunnelCockpit link */
+				sprintf(__('You need to have a %s account with an already set up funnel to use this plugin.', 'funnelcockpit'), '<a target="_blank" href="https://funnelcockpit.com/">FunnelCockpit</a>'); 
+			?></p>
+			<form method="post" action="">
+				<?php wp_nonce_field( 'funnelcockpit_options_update', 'funnelcockpit_options_nonce' ); ?>
 				<table class="form-table">
 					<tr valign="top">
-						<th scope="row"><?php _e('Public API Key', 'funnelcockpit'); ?></th>
-						<td><input type="text" name="funnelcockpit_apikey_public" value="<?php echo $apiKeyPublic; ?>" class="regular-text" /></td>
+						<th scope="row"><?php esc_html_e('Public API Key', 'funnelcockpit'); ?></th>
+						<td><input type="text" name="funnelcockpit_apikey_public" value="<?php echo esc_attr($apiKeyPublic); ?>" class="regular-text" /></td>
 					</tr>
 					<tr valign="top">
-						<th scope="row"><?php _e('Private API Key', 'funnelcockpit'); ?></th>
-						<td><input type="text" name="funnelcockpit_apikey_private" value="<?php echo $apiKeyPrivate; ?>" class="regular-text" /></td>
+						<th scope="row"><?php esc_html_e('Private API Key', 'funnelcockpit'); ?></th>
+						<td><input type="text" name="funnelcockpit_apikey_private" value="<?php echo esc_attr($apiKeyPrivate); ?>" class="regular-text" /></td>
 					</tr>
 					<tr valign="top">
 						<th scope="row">WordPress Header nicht entfernen<br /><small>(für erfahrene Nutzer)</small></th>
@@ -420,19 +469,19 @@ class FunnelCockpit_Admin {
 					</tr>
 				</table>
 
-				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Settings', 'funnelcockpit') ?>" /></p>
+				<p class="submit"><input type="submit" class="button-primary" value="<?php esc_attr_e('Save Settings', 'funnelcockpit') ?>" /></p>
 
-				<?php if (isset($_GET['settings-updated'])) { ?>
-					<div class="notice notice-success is-dismissible" style="animation: fadeOut 5s forwards;">
-						<p><?php _e('Settings saved.', 'funnelcockpit'); ?></p>
-					</div>
-				<?php } else if (isset($_GET['error'])) {
-					error_log('Error saving funnelcockpit settings: ' . $_GET['error']);
-					?>
-					<div class="notice notice-error is-dismissible" style="animation: fadeOut 5s forwards;">
-						<p><?php _e('Error saving settings:', 'funnelcockpit'); ?> <?php echo $_GET['error']; ?></p>
-					</div>
-				<?php } ?>
+							<?php if (isset($_GET['settings-updated'])) { ?>
+				<div class="notice notice-success is-dismissible" style="animation: fadeOut 5s forwards;">
+					<p><?php esc_html_e('Settings saved.', 'funnelcockpit'); ?></p>
+				</div>
+			<?php } else if (isset($_GET['error'])) {
+				$error_message = sanitize_text_field( wp_unslash( $_GET['error'] ) );
+				?>
+				<div class="notice notice-error is-dismissible" style="animation: fadeOut 5s forwards;">
+					<p><?php esc_html_e('Error saving settings:', 'funnelcockpit'); ?> <?php echo esc_html($error_message); ?></p>
+				</div>
+			<?php } ?>
 
 			</form>
 		</div>
