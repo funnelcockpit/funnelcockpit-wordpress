@@ -4,22 +4,40 @@ Donate link: https://funnelcockpit.com/
 Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
 Tested up to: 6.8
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Die All-In-One Lösung für den Aufbau von Funnels, Seiten und Conversion-Optimierung via Splittests, Maustracking und mehr.
 
 == Description ==
-
-Die All-In-One Lösung für den Aufbau von Funnels, Seiten und Conversion-Optimierung via Splittests, Maustracking und mehr. https://funnelcockpit.com/
-
+FunnelCockpit ist das umfassende Tool zur Erstellung hochkonvertierender Sales-Funnels und Landingpages. Entwickeln Sie professionelle Marketing-Funnels mit fortschrittlichen Tools zur Conversion-Optimierung und binden Sie diese ganz einfach per WordPress Plugin in Ihre WordPress-Website ein.
+= Hauptfunktionen =
+* *Funnel-Builder* – Erstellen Sie komplette Sales-Funnels mit mehreren Seiten
+* *Landingpage-Ersteller* – Gestalten Sie hochkonvertierende Landingpages
+* *Split-Testing (A/B-Tests)* – Optimieren Sie Ihre Seiten durch Vergleichstests
+* *Maustracking* – Analysieren Sie Nutzerverhalten mit Heatmaps und Sitzungsaufzeichnungen
+* *Conversion-Optimierung* – Integrierte Tools zur Steigerung Ihrer Conversion-Raten
+* *WordPress-Integration* – Nahtlose Verbindung mit Ihrer WordPress-Website
+* *Mobil-Optimiert* – Alle Seiten sind für mobile Endgeräte optimiert
+= Ideal für =
+* Online-Marketer
+* Unternehmer:innen
+* Agenturen
+* E-Commerce-Shops
+* Kursanbieter:innen
+* Alle, die ihre Conversions steigern möchten
+Verwandeln Sie Ihre WordPress-Website mit FunnelCockpit in eine leistungsstarke Conversion-Maschine!
+*Weitere Informationen:* https://funnelcockpit.com/
 == Installation ==
 
 1. Upload `funnelcockpit-wordpress` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.4.6 =
+* Updated plugin documentation and changelog formatting
 
 = 1.4.5 =
 * Fixed API connectivity issues for improved plugin stability
