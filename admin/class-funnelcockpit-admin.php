@@ -421,8 +421,10 @@ class FunnelCockpit_Admin {
 	}
 
 	public function funnelcockpit_options() {
+		$settings_updated = false;
+		
 		// Check for nonce and process form data
-		if ( isset( $_POST['submit'] ) && isset( $_POST['funnelcockpit_options_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['funnelcockpit_options_nonce'] ) ), 'funnelcockpit_options_update' ) ) {
+		if ( isset( $_POST['funnelcockpit_save_settings'] ) && isset( $_POST['funnelcockpit_options_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['funnelcockpit_options_nonce'] ) ), 'funnelcockpit_options_update' ) ) {
 			// Save the settings
 			if ( isset( $_POST['funnelcockpit_apikey_public'] ) ) {
 				update_option( 'funnelcockpit_apikey_public', sanitize_text_field( wp_unslash( $_POST['funnelcockpit_apikey_public'] ) ) );
@@ -436,10 +438,10 @@ class FunnelCockpit_Admin {
 				update_option( 'funnelcockpit_print_head', '' );
 			}
 
-			// Redirect with a success message
-			wp_safe_redirect( add_query_arg( 'settings-updated', 'true', menu_page_url( 'funnelcockpit-settings', false ) ) );
-			exit;
+			$settings_updated = true;
 		}
+		
+		// Get fresh values after potential save
 		$apiKeyPublic = get_option('funnelcockpit_apikey_public');
 		$apiKeyPrivate = get_option('funnelcockpit_apikey_private');
 		$printHead = get_option('funnelcockpit_print_head');
@@ -449,8 +451,19 @@ class FunnelCockpit_Admin {
 		<div class="wrap">
 			<img src="<?php echo esc_url(plugin_dir_url( __FILE__ ) . 'images/logo.png'); ?>" alt="FunnelCockpit" height="50">
 			<p><?php 
-				/* translators: %s: FunnelCockpit link */
-				sprintf(__('You need to have a %s account with an already set up funnel to use this plugin.', 'funnelcockpit'), '<a target="_blank" href="https://funnelcockpit.com/">FunnelCockpit</a>'); 
+				echo wp_kses(
+					sprintf(
+						/* translators: %s: FunnelCockpit link */
+						__('You need to have a %s account with an already set up funnel to use this plugin.', 'funnelcockpit'), 
+						'<a target="_blank" href="' . esc_url('https://funnelcockpit.com/') . '">FunnelCockpit</a>'
+					),
+					array(
+						'a' => array(
+							'href' => array(),
+							'target' => array(),
+						),
+					)
+				); 
 			?></p>
 			<form method="post" action="">
 				<?php wp_nonce_field( 'funnelcockpit_options_update', 'funnelcockpit_options_nonce' ); ?>
@@ -469,19 +482,13 @@ class FunnelCockpit_Admin {
 					</tr>
 				</table>
 
-				<p class="submit"><input type="submit" class="button-primary" value="<?php esc_attr_e('Save Settings', 'funnelcockpit') ?>" /></p>
+				<?php if ($settings_updated) { ?>
+					<div class="notice notice-success is-dismissible">
+						<p><?php esc_html_e('Settings saved.', 'funnelcockpit'); ?></p>
+					</div>
+				<?php } ?>
 
-							<?php if (isset($_GET['settings-updated'])) { ?>
-				<div class="notice notice-success is-dismissible" style="animation: fadeOut 5s forwards;">
-					<p><?php esc_html_e('Settings saved.', 'funnelcockpit'); ?></p>
-				</div>
-			<?php } else if (isset($_GET['error'])) {
-				$error_message = sanitize_text_field( wp_unslash( $_GET['error'] ) );
-				?>
-				<div class="notice notice-error is-dismissible" style="animation: fadeOut 5s forwards;">
-					<p><?php esc_html_e('Error saving settings:', 'funnelcockpit'); ?> <?php echo esc_html($error_message); ?></p>
-				</div>
-			<?php } ?>
+				<p class="submit"><input type="submit" name="funnelcockpit_save_settings" class="button-primary" value="<?php esc_attr_e('Save Settings', 'funnelcockpit') ?>" /></p>
 
 			</form>
 		</div>

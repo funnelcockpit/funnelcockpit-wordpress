@@ -69,7 +69,7 @@ class FunnelCockpit {
 	public function __construct() {
 
 		$this->funnelcockpit = 'funnelcockpit';
-		$this->version = '1.0.0';
+		$this->version = '1.4.7';
 
 		$this->load_dependencies();
 		$this->set_locale();
