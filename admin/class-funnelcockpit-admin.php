@@ -226,7 +226,7 @@ class FunnelCockpit_Admin {
 
 				if (!empty($apiKeyPrivate))
 				{
-					$response = wp_remote_post( 'http://localhost:3003/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
+					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if (is_wp_error($response)) {
 						?>
 						<div class="error notice">
@@ -270,7 +270,7 @@ class FunnelCockpit_Admin {
 						echo '<div class="error notice"><p>API Error: ' . esc_html($response['response']['message']) . '</p></div>';
 					}
 
-					$response = wp_remote_post( 'http://localhost:3003/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
+					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if (is_wp_error($response)) {
 						?>
 						<div class="error notice">
@@ -407,7 +407,7 @@ class FunnelCockpit_Admin {
 		if (!empty($apiKeyPrivate) && !empty($_POST['funnel_id']) && !empty($_POST['funnelpage_id'])) {
 			$funnel_id = sanitize_text_field( wp_unslash( $_POST['funnel_id'] ) );
 			$funnelpage_id = sanitize_text_field( wp_unslash( $_POST['funnelpage_id'] ) );
-            $res = wp_remote_post( 'http://localhost:3003/funnel/' . $funnel_id . '/page/' . $funnelpage_id, array(
+            $res = wp_remote_post( 'https://api.funnelcockpit.com/funnel/' . $funnel_id . '/page/' . $funnelpage_id, array(
                 'headers' => array( 'Content-Type' => 'application/json; charset=utf-8', 'Authorization' => $apiKeyPrivate ),
                 'body'        => json_encode(array( 'slug' => $new_slug )),
                 'method'      => 'POST',
