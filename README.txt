@@ -4,7 +4,7 @@ Donate link: https://funnelcockpit.com/
 Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
 Tested up to: 6.8
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,11 @@ Verwandeln Sie Ihre WordPress-Website mit FunnelCockpit in eine leistungsstarke 
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.4.7 =
+* Fixed form submission handling in admin settings page
+* Improved security and error handling for settings form
+* Removed redirect issues when saving plugin options
 
 = 1.4.6 =
 * Updated plugin documentation and changelog formatting
