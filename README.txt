@@ -3,43 +3,48 @@ Contributors: funnelcockpit
 Donate link: https://funnelcockpit.com/
 Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
-Tested up to: 6.8
-Stable tag: 1.4.8
+Tested up to: 7.0
+Stable tag: 1.4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Die All-In-One Lösung für den Aufbau von Funnels, Seiten und Conversion-Optimierung via Splittests, Maustracking und mehr.
+All-in-one funnel and landing page publishing for FunnelCockpit users.
 
 == Description ==
-FunnelCockpit ist das umfassende Tool zur Erstellung hochkonvertierender Sales-Funnels und Landingpages. Entwickeln Sie professionelle Marketing-Funnels mit fortschrittlichen Tools zur Conversion-Optimierung und binden Sie diese ganz einfach per WordPress Plugin in Ihre WordPress-Website ein.
-= Hauptfunktionen =
-* *Funnel-Builder* – Erstellen Sie komplette Sales-Funnels mit mehreren Seiten
-* *Landingpage-Ersteller* – Gestalten Sie hochkonvertierende Landingpages
-* *Split-Testing (A/B-Tests)* – Optimieren Sie Ihre Seiten durch Vergleichstests
-* *Maustracking* – Analysieren Sie Nutzerverhalten mit Heatmaps und Sitzungsaufzeichnungen
-* *Conversion-Optimierung* – Integrierte Tools zur Steigerung Ihrer Conversion-Raten
-* *WordPress-Integration* – Nahtlose Verbindung mit Ihrer WordPress-Website
-* *Mobil-Optimiert* – Alle Seiten sind für mobile Endgeräte optimiert
-= Ideal für =
-* Online-Marketer
-* Unternehmer:innen
-* Agenturen
-* E-Commerce-Shops
-* Kursanbieter:innen
-* Alle, die ihre Conversions steigern möchten
-Verwandeln Sie Ihre WordPress-Website mit FunnelCockpit in eine leistungsstarke Conversion-Maschine!
-*Weitere Informationen:* https://funnelcockpit.com/
+FunnelCockpit helps you publish FunnelCockpit funnels and landing pages on your WordPress site. Connect your FunnelCockpit account, select the funnel page you want to use, and make it available through WordPress.
+
+= Key features =
+* *Funnel page publishing* - Connect FunnelCockpit pages to WordPress URLs
+* *Landing page integration* - Publish landing pages from your FunnelCockpit account
+* *Split test support* - Serve FunnelCockpit split test pages through WordPress
+* *Caching* - Cache fetched funnel page content for faster delivery
+* *WordPress front page support* - Use a funnel page as the WordPress front page
+* *Mobile-ready output* - FunnelCockpit pages remain optimized for mobile devices
+
+= Best for =
+* Online marketers
+* Businesses
+* Agencies
+* E-commerce stores
+* Course providers
+* FunnelCockpit users who want to publish funnels on WordPress
+
+More information: https://funnelcockpit.com/
 == Installation ==
 
-1. Upload `funnelcockpit-wordpress` folder to the `/wp-content/plugins/` directory
+1. Upload the `funnelcockpit` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
 
- = 1.4.8 =
- * Updated plugin icons (128x128 and 256x256)
- * Removed deprecated banner asset
- * No code changes; assets only
+= 1.4.9 =
+* Confirmed compatibility with WordPress 7.0
+* Updated WordPress compatibility metadata
+
+= 1.4.8 =
+* Updated plugin icons (128x128 and 256x256)
+* Removed deprecated banner asset
+* No code changes; assets only
 
 = 1.4.7 =
 * Fixed form submission handling in admin settings page

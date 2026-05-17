@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 global $wp_query;
 $postid = $wp_query->post->ID;
 $funnelPageId = get_post_meta($postid, 'funnelpage_id', true);

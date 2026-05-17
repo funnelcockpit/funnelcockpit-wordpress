@@ -41,7 +41,7 @@ jobs:
       - name: Verify release package
         run: |
           mkdir -p build/funnelcockpit
-          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules ./ build/funnelcockpit/
+          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules --exclude=deploy ./ build/funnelcockpit/
           test -f build/funnelcockpit/funnelcockpit.php
           test -f build/funnelcockpit/README.txt
           cd build
