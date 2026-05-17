@@ -1,0 +1,160 @@
+name: Plugin CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php-syntax:
+    name: PHP syntax (${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '7.4'
+          - '8.2'
+          - '8.3'
+          - '8.4'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+
+      - name: Lint PHP files
+        run: find . -name '*.php' -not -path './vendor/*' -not -path './node_modules/*' -not -path './build/*' -print0 | xargs -0 -n1 php -l
+
+  php-static-analysis:
+    name: WordPress PHP static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate Composer configuration
+        run: composer validate --strict --no-check-lock
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Check PHP compatibility
+        run: composer run lint:phpcompat
+
+      - name: Run WordPress VIP PHPCS inspection
+        continue-on-error: true
+        run: composer run lint:vip
+
+  wordpress-smoke-test:
+    name: WordPress activation smoke test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: mysqli
+          tools: wp-cli
+
+      - name: Install WordPress
+        run: |
+          wp core download --path=/tmp/wordpress --version=latest --force
+          wp config create --path=/tmp/wordpress --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=127.0.0.1 --skip-check
+          wp core install --path=/tmp/wordpress --url=http://example.test --title=FunnelCockpit --admin_user=admin --admin_password=password --admin_email=admin@example.com
+
+      - name: Install plugin
+        run: |
+          mkdir -p /tmp/wordpress/wp-content/plugins/funnelcockpit
+          rsync -a --exclude=.git --exclude=.github --exclude=vendor --exclude=node_modules --exclude=build ./ /tmp/wordpress/wp-content/plugins/funnelcockpit/
+
+      - name: Activate plugin
+        run: |
+          wp plugin activate funnelcockpit --path=/tmp/wordpress
+          wp plugin status funnelcockpit --path=/tmp/wordpress
+
+  asset-syntax:
+    name: JavaScript syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Check JavaScript files
+        run: find . -name '*.js' -not -path './node_modules/*' -not -path './vendor/*' -not -path './build/*' -print0 | xargs -0 -n1 node --check
+
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run Plugin Check
+        continue-on-error: true
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './'
+          include-experimental: false
+          ignore-warnings: true
+
+  package:
+    name: Package verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build plugin zip
+        run: |
+          mkdir -p build/funnelcockpit
+          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules ./ build/funnelcockpit/
+          test -f build/funnelcockpit/funnelcockpit.php
+          test -f build/funnelcockpit/README.txt
+          cd build
+          zip -qr funnelcockpit.zip funnelcockpit
+          unzip -tq funnelcockpit.zip

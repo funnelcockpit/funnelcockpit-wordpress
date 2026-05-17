@@ -5,25 +5,55 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          coverage: none
+          tools: composer:v2
 
       - name: PHP Lint
-        run: php -l *.php
+        run: find . -name '*.php' -not -path './vendor/*' -not -path './node_modules/*' -not -path './build/*' -print0 | xargs -0 -n1 php -l
+
+      - name: Validate Composer configuration
+        run: composer validate --strict --no-check-lock
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Check PHP compatibility
+        run: composer run lint:phpcompat
+
+      - name: Run WordPress VIP PHPCS inspection
+        continue-on-error: true
+        run: composer run lint:vip
+
+      - name: Verify release package
+        run: |
+          mkdir -p build/funnelcockpit
+          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules ./ build/funnelcockpit/
+          test -f build/funnelcockpit/funnelcockpit.php
+          test -f build/funnelcockpit/README.txt
+          cd build
+          zip -qr funnelcockpit.zip funnelcockpit
+          unzip -tq funnelcockpit.zip
 
   deploy:
     needs: validate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
 
       - name: Install Dependencies
         run: |

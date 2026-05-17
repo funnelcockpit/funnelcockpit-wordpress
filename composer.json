@@ -1,0 +1,21 @@
+{
+  "name": "funnelcockpit/funnelcockpit-wordpress",
+  "description": "FunnelCockpit WordPress plugin quality tooling.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {},
+  "require-dev": {
+    "automattic/vipwpcs": "^3.0",
+    "phpcompatibility/phpcompatibility-wp": "^2.1"
+  },
+  "scripts": {
+    "lint:phpcompat": "phpcs --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion 7.4- --ignore=vendor/*,node_modules/*,build/* .",
+    "lint:vip": "phpcs --standard=WordPress-VIP-Go --extensions=php --warning-severity=0 --ignore=vendor/*,node_modules/*,build/* ."
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "sort-packages": true
+  }
+}
