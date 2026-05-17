@@ -3,8 +3,8 @@ Contributors: funnelcockpit
 Donate link: https://funnelcockpit.com/
 Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
-Tested up to: 6.8
-Stable tag: 1.4.8
+Tested up to: 7.0
+Stable tag: 1.4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,10 +36,14 @@ Verwandeln Sie Ihre WordPress-Website mit FunnelCockpit in eine leistungsstarke 
 
 == Changelog ==
 
- = 1.4.8 =
- * Updated plugin icons (128x128 and 256x256)
- * Removed deprecated banner asset
- * No code changes; assets only
+= 1.4.9 =
+* Confirmed compatibility with WordPress 7.0
+* Updated WordPress compatibility metadata
+
+= 1.4.8 =
+* Updated plugin icons (128x128 and 256x256)
+* Removed deprecated banner asset
+* No code changes; assets only
 
 = 1.4.7 =
 * Fixed form submission handling in admin settings page
