@@ -22,21 +22,34 @@ if ($splitTestsEnabled) {
 		}
 	}
 
-	$response = wp_remote_get('https://page.funnelcockpit.com/' . $funnelPageId, [
+	$response = wp_remote_get('https://api.funnelcockpit.com/funnel-page/' . $funnelPageId, [
 		'timeout' => 10,
 		'cookies' => $cookies
 	]);
 	if ($response['response']['code'] == 200 && isset($response['body'])) {
-		foreach ($response['cookies'] as $cookie) {
-			if (strpos($cookie->name, 'funnelPage') !== false) {
-				setcookie($cookie->name, $cookie->value, time() + (60 * 60 * 24 * 30));
-			}
-		}
+		$funnelPage = json_decode($response['body']);
+		if (!empty($funnelPage) && isset($funnelPage->head) && isset($funnelPage->body)) {
 
-		// Output trusted HTML content from FunnelCockpit service
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $response['body'];
-		die();
+			foreach ($response['cookies'] as $cookie) {
+				if (strpos($cookie->name, 'funnelPage') !== false) {
+					setcookie($cookie->name, $cookie->value, time() + (60 * 60 * 24 * 30));
+				}
+			}
+
+			// Output trusted HTML content from FunnelCockpit service
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<!DOCTYPE html><html>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $funnelPage->head;
+			if (get_option('funnelcockpit_print_head') == 'on') {
+				wp_head();
+			}
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo str_replace('</body>', '', $funnelPage->body);
+			wp_footer();
+			echo '</body></html>';
+			die();
+		}
 	}
 }
 
