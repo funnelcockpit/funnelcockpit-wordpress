@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       FunnelCockpit
  * Plugin URI:        https://funnelcockpit.com
- * Description:       Die All-In-One Lösung für den Aufbau von Funnels, Seiten und Conversion-Optimierung via Splittests, Maustracking und mehr.
+ * Description:       Publish FunnelCockpit funnels and landing pages on your WordPress site.
  * Version:           1.4.9
  * Author:            FunnelCockpit
  * Author URI:        https://funnelcockpit.com
@@ -26,8 +26,8 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**

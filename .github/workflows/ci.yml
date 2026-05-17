@@ -105,7 +105,7 @@ jobs:
       - name: Install plugin
         run: |
           mkdir -p /tmp/wordpress/wp-content/plugins/funnelcockpit
-          rsync -a --exclude=.git --exclude=.github --exclude=vendor --exclude=node_modules --exclude=build ./ /tmp/wordpress/wp-content/plugins/funnelcockpit/
+          rsync -a --exclude=.git --exclude=.github --exclude=vendor --exclude=node_modules --exclude=build --exclude=deploy ./ /tmp/wordpress/wp-content/plugins/funnelcockpit/
 
       - name: Activate plugin
         run: |
@@ -130,15 +130,23 @@ jobs:
   plugin-check:
     name: WordPress Plugin Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Build plugin directory
+        run: |
+          mkdir -p build/funnelcockpit
+          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules --exclude=deploy ./ build/funnelcockpit/
+
       - name: Run Plugin Check
-        continue-on-error: true
         uses: wordpress/plugin-check-action@v1
         with:
-          build-dir: './'
+          build-dir: './build/funnelcockpit'
           include-experimental: false
           ignore-warnings: true
 
@@ -152,7 +160,7 @@ jobs:
       - name: Build plugin zip
         run: |
           mkdir -p build/funnelcockpit
-          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules ./ build/funnelcockpit/
+          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules --exclude=deploy ./ build/funnelcockpit/
           test -f build/funnelcockpit/funnelcockpit.php
           test -f build/funnelcockpit/README.txt
           cd build
