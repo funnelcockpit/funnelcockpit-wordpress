@@ -130,25 +130,50 @@ jobs:
   plugin-check:
     name: WordPress Plugin Check
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      issues: write
-      pull-requests: write
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build plugin directory
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: mysqli
+          tools: wp-cli
+
+      - name: Install WordPress
         run: |
-          mkdir -p build/funnelcockpit
-          rsync -a --exclude=.git --exclude=.github --exclude=build --exclude=vendor --exclude=node_modules --exclude=deploy ./ build/funnelcockpit/
+          wp core download --path=/tmp/wordpress --version=latest --force
+          wp config create --path=/tmp/wordpress --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=127.0.0.1 --skip-check
+          wp core install --path=/tmp/wordpress --url=http://example.test --title=FunnelCockpit --admin_user=admin --admin_password=password --admin_email=admin@example.com
+
+      - name: Install plugins
+        run: |
+          mkdir -p /tmp/wordpress/wp-content/plugins/funnelcockpit
+          rsync -a --exclude=.git --exclude=.github --exclude=vendor --exclude=node_modules --exclude=build --exclude=deploy ./ /tmp/wordpress/wp-content/plugins/funnelcockpit/
+          wp plugin install plugin-check --activate --path=/tmp/wordpress
+          wp plugin activate funnelcockpit --path=/tmp/wordpress
 
       - name: Run Plugin Check
-        uses: wordpress/plugin-check-action@v1
-        with:
-          build-dir: './build/funnelcockpit'
-          include-experimental: false
-          ignore-warnings: true
+        run: |
+          wp --path=/tmp/wordpress --require=/tmp/wordpress/wp-content/plugins/plugin-check/cli.php plugin check funnelcockpit --format=json --ignore-warnings > "$RUNNER_TEMP/plugin-check-results.txt"
+          cat "$RUNNER_TEMP/plugin-check-results.txt"
 
   package:
     name: Package verification
