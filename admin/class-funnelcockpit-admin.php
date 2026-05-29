@@ -230,7 +230,7 @@ class FunnelCockpit_Admin {
 
 				if (!empty($apiKeyPrivate))
 				{
-					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
+					$response = wp_remote_get( 'https://api.funnelcockpit.com/funnels', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if (is_wp_error($response)) {
 						?>
 						<div class="error notice">
@@ -274,7 +274,7 @@ class FunnelCockpit_Admin {
 						echo '<div class="error notice"><p>API Error: ' . esc_html($response['response']['message']) . '</p></div>';
 					}
 
-					$response = wp_remote_post( 'https://api.funnelcockpit.com/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
+					$response = wp_remote_get( 'https://api.funnelcockpit.com/funnel-pages', array( 'headers' => array( 'Authorization' => $apiKeyPrivate ) ) );
 					if (is_wp_error($response)) {
 						?>
 						<div class="error notice">
