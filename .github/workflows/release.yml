@@ -15,6 +15,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Validate release tag
+        run: |
+          tag="${GITHUB_REF_NAME}"
+
+          if [[ ! "$tag" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Release tags must be unprefixed semver, for example 1.5.2. Got: $tag"
+            exit 1
+          fi
+
+          plugin_version="$(sed -nE 's/.*Version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' funnelcockpit.php | head -n 1)"
+          stable_tag="$(sed -nE 's/^Stable tag:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' README.txt | head -n 1)"
+
+          if [[ "$plugin_version" != "$tag" ]]; then
+            echo "::error::funnelcockpit.php Version ($plugin_version) must match release tag ($tag)."
+            exit 1
+          fi
+
+          if [[ "$stable_tag" != "$tag" ]]; then
+            echo "::error::README.txt Stable tag ($stable_tag) must match release tag ($tag)."
+            exit 1
+          fi
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
