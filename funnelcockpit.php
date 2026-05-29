@@ -16,7 +16,7 @@
  * Plugin Name:       FunnelCockpit
  * Plugin URI:        https://funnelcockpit.com
  * Description:       Publish FunnelCockpit funnels and landing pages on your WordPress site.
- * Version:           1.5.0
+ * Version:           1.5.1
  * Author:            FunnelCockpit
  * Author URI:        https://funnelcockpit.com
  * License:           GPL-2.0+
