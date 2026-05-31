@@ -120,10 +120,6 @@ msgstr ""
 "Du brauchst zuerst einen %s Account mit einem bereits eingerichtetem Funnel, "
 "um dieses Plugin nutzen zu können."
 
-#: admin/class-funnelcockpit-admin.php:340
-msgid "Public API Key"
-msgstr "Öffentlicher API Key"
-
 #: admin/class-funnelcockpit-admin.php:344
 msgid "Private API Key"
 msgstr "Privater API Key"

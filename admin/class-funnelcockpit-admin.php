@@ -109,9 +109,6 @@ class FunnelCockpit_Admin {
 		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_private', array(
 			'sanitize_callback' => 'sanitize_text_field'
 		));
-		register_setting('funnelcockpit_options', 'funnelcockpit_apikey_public', array(
-			'sanitize_callback' => 'sanitize_text_field'
-		));
 		register_setting('funnelcockpit_options', 'funnelcockpit_funnel_id', array(
 			'sanitize_callback' => 'sanitize_text_field'
 		));
@@ -223,7 +220,6 @@ class FunnelCockpit_Admin {
 				global $post;
 				$custom = get_post_custom($post->ID);
 				$apiKeyPrivate = get_option('funnelcockpit_apikey_private');
-				$apiKeyPublic = get_option('funnelcockpit_apikey_public');
 				$funnelId = !empty($custom["funnel_id"]) ? $custom["funnel_id"][0] : '';
 				$funnelPageId = !empty($custom["funnelpage_id"]) ? $custom["funnelpage_id"][0] : '';
 				$fetchTime = get_transient('funnelpage_' . $funnelPageId . '_time');
@@ -430,9 +426,6 @@ class FunnelCockpit_Admin {
 		// Check for nonce and process form data
 		if ( isset( $_POST['funnelcockpit_save_settings'] ) && isset( $_POST['funnelcockpit_options_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['funnelcockpit_options_nonce'] ) ), 'funnelcockpit_options_update' ) ) {
 			// Save the settings
-			if ( isset( $_POST['funnelcockpit_apikey_public'] ) ) {
-				update_option( 'funnelcockpit_apikey_public', sanitize_text_field( wp_unslash( $_POST['funnelcockpit_apikey_public'] ) ) );
-			}
 			if ( isset( $_POST['funnelcockpit_apikey_private'] ) ) {
 				update_option( 'funnelcockpit_apikey_private', sanitize_text_field( wp_unslash( $_POST['funnelcockpit_apikey_private'] ) ) );
 			}
@@ -446,7 +439,6 @@ class FunnelCockpit_Admin {
 		}
 		
 		// Get fresh values after potential save
-		$apiKeyPublic = get_option('funnelcockpit_apikey_public');
 		$apiKeyPrivate = get_option('funnelcockpit_apikey_private');
 		$printHead = get_option('funnelcockpit_print_head');
 
@@ -472,10 +464,6 @@ class FunnelCockpit_Admin {
 			<form method="post" action="">
 				<?php wp_nonce_field( 'funnelcockpit_options_update', 'funnelcockpit_options_nonce' ); ?>
 				<table class="form-table">
-					<tr valign="top">
-						<th scope="row"><?php esc_html_e('Public API Key', 'funnelcockpit'); ?></th>
-						<td><input type="text" name="funnelcockpit_apikey_public" value="<?php echo esc_attr($apiKeyPublic); ?>" class="regular-text" /></td>
-					</tr>
 					<tr valign="top">
 						<th scope="row"><?php esc_html_e('Private API Key', 'funnelcockpit'); ?></th>
 						<td><input type="text" name="funnelcockpit_apikey_private" value="<?php echo esc_attr($apiKeyPrivate); ?>" class="regular-text" /></td>
