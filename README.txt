@@ -4,7 +4,7 @@ Donate link: https://funnelcockpit.com/
 Tags: funnelcockpit, funnel, cockpit
 Requires at least: 3.0.1
 Tested up to: 7.0
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,9 @@ More information: https://funnelcockpit.com/
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.5.2 =
+* Removed the public API key field from plugin settings
 
 = 1.5.1 =
 * Fixed FunnelCockpit admin page loading by using GET requests for funnel and funnel page lists
